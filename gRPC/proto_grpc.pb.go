@@ -19,14 +19,21 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	RicartArgawala_Request_FullMethodName = "/RicartArgawala.RicartArgawala/request"
+	RicartArgawala_Request_FullMethodName   = "/RicartArgawala.RicartArgawala/request"
+	RicartArgawala_EnterCS_FullMethodName   = "/RicartArgawala.RicartArgawala/EnterCS"
+	RicartArgawala_ReleaseCS_FullMethodName = "/RicartArgawala.RicartArgawala/ReleaseCS"
 )
 
 // RicartArgawalaClient is the client API for RicartArgawala service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RicartArgawalaClient interface {
+	// call this to request permission
 	Request(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Response, error)
+	// Ask to attempt entering the critical section
+	EnterCS(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
+	// Ask to release the critical section
+	ReleaseCS(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error)
 }
 
 type ricartArgawalaClient struct {
@@ -47,11 +54,36 @@ func (c *ricartArgawalaClient) Request(ctx context.Context, in *Message, opts ..
 	return out, nil
 }
 
+func (c *ricartArgawalaClient) EnterCS(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, RicartArgawala_EnterCS_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ricartArgawalaClient) ReleaseCS(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*Response, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Response)
+	err := c.cc.Invoke(ctx, RicartArgawala_ReleaseCS_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RicartArgawalaServer is the server API for RicartArgawala service.
 // All implementations must embed UnimplementedRicartArgawalaServer
 // for forward compatibility.
 type RicartArgawalaServer interface {
+	// call this to request permission
 	Request(context.Context, *Message) (*Response, error)
+	// Ask to attempt entering the critical section
+	EnterCS(context.Context, *Empty) (*Response, error)
+	// Ask to release the critical section
+	ReleaseCS(context.Context, *Empty) (*Response, error)
 	mustEmbedUnimplementedRicartArgawalaServer()
 }
 
@@ -64,6 +96,12 @@ type UnimplementedRicartArgawalaServer struct{}
 
 func (UnimplementedRicartArgawalaServer) Request(context.Context, *Message) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Request not implemented")
+}
+func (UnimplementedRicartArgawalaServer) EnterCS(context.Context, *Empty) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnterCS not implemented")
+}
+func (UnimplementedRicartArgawalaServer) ReleaseCS(context.Context, *Empty) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReleaseCS not implemented")
 }
 func (UnimplementedRicartArgawalaServer) mustEmbedUnimplementedRicartArgawalaServer() {}
 func (UnimplementedRicartArgawalaServer) testEmbeddedByValue()                        {}
@@ -104,6 +142,42 @@ func _RicartArgawala_Request_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RicartArgawala_EnterCS_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RicartArgawalaServer).EnterCS(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RicartArgawala_EnterCS_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RicartArgawalaServer).EnterCS(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RicartArgawala_ReleaseCS_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RicartArgawalaServer).ReleaseCS(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RicartArgawala_ReleaseCS_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RicartArgawalaServer).ReleaseCS(ctx, req.(*Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RicartArgawala_ServiceDesc is the grpc.ServiceDesc for RicartArgawala service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +188,14 @@ var RicartArgawala_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "request",
 			Handler:    _RicartArgawala_Request_Handler,
+		},
+		{
+			MethodName: "EnterCS",
+			Handler:    _RicartArgawala_EnterCS_Handler,
+		},
+		{
+			MethodName: "ReleaseCS",
+			Handler:    _RicartArgawala_ReleaseCS_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -117,6 +117,42 @@ func (x *Response) GetMsg() string {
 	return ""
 }
 
+type Empty struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Empty) Reset() {
+	*x = Empty{}
+	mi := &file_gRPC_proto_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Empty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Empty) ProtoMessage() {}
+
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	mi := &file_gRPC_proto_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
+func (*Empty) Descriptor() ([]byte, []int) {
+	return file_gRPC_proto_proto_rawDescGZIP(), []int{2}
+}
+
 var File_gRPC_proto_proto protoreflect.FileDescriptor
 
 const file_gRPC_proto_proto_rawDesc = "" +
@@ -126,9 +162,12 @@ const file_gRPC_proto_proto_rawDesc = "" +
 	"\alamport\x18\x01 \x01(\x03R\alamport\x12\x17\n" +
 	"\anode_id\x18\x02 \x01(\tR\x06nodeId\"\x1c\n" +
 	"\bresponse\x12\x10\n" +
-	"\x03msg\x18\x01 \x01(\tR\x03msg2N\n" +
+	"\x03msg\x18\x01 \x01(\tR\x03msg\"\a\n" +
+	"\x05Empty2\xc8\x01\n" +
 	"\x0eRicartArgawala\x12<\n" +
-	"\arequest\x12\x17.RicartArgawala.Message\x1a\x18.RicartArgawala.responseB\aZ\x05gRPC/b\x06proto3"
+	"\arequest\x12\x17.RicartArgawala.Message\x1a\x18.RicartArgawala.response\x12:\n" +
+	"\aEnterCS\x12\x15.RicartArgawala.Empty\x1a\x18.RicartArgawala.response\x12<\n" +
+	"\tReleaseCS\x12\x15.RicartArgawala.Empty\x1a\x18.RicartArgawala.responseB\aZ\x05gRPC/b\x06proto3"
 
 var (
 	file_gRPC_proto_proto_rawDescOnce sync.Once
@@ -142,16 +181,21 @@ func file_gRPC_proto_proto_rawDescGZIP() []byte {
 	return file_gRPC_proto_proto_rawDescData
 }
 
-var file_gRPC_proto_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_gRPC_proto_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_gRPC_proto_proto_goTypes = []any{
 	(*Message)(nil),  // 0: RicartArgawala.Message
 	(*Response)(nil), // 1: RicartArgawala.response
+	(*Empty)(nil),    // 2: RicartArgawala.Empty
 }
 var file_gRPC_proto_proto_depIdxs = []int32{
 	0, // 0: RicartArgawala.RicartArgawala.request:input_type -> RicartArgawala.Message
-	1, // 1: RicartArgawala.RicartArgawala.request:output_type -> RicartArgawala.response
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: RicartArgawala.RicartArgawala.EnterCS:input_type -> RicartArgawala.Empty
+	2, // 2: RicartArgawala.RicartArgawala.ReleaseCS:input_type -> RicartArgawala.Empty
+	1, // 3: RicartArgawala.RicartArgawala.request:output_type -> RicartArgawala.response
+	1, // 4: RicartArgawala.RicartArgawala.EnterCS:output_type -> RicartArgawala.response
+	1, // 5: RicartArgawala.RicartArgawala.ReleaseCS:output_type -> RicartArgawala.response
+	3, // [3:6] is the sub-list for method output_type
+	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -168,7 +212,7 @@ func file_gRPC_proto_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gRPC_proto_proto_rawDesc), len(file_gRPC_proto_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

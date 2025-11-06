@@ -3,7 +3,13 @@ package RicartArgawala;
 option go_package = "gRPC/";
 
 service RicartArgawala {
+    // call this to request permission
     rpc request (Message) returns (response);
+
+    // Ask to attempt entering the critical section
+    rpc EnterCS (Empty) returns (response);
+    // Ask to release the critical section
+    rpc ReleaseCS (Empty) returns (response);
 }
 
 message Message {
@@ -14,3 +20,9 @@ message Message {
 message response {
      string msg = 1;
 }
+
+message Empty {}
+
+
+
+
