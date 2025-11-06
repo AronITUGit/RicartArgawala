@@ -1,0 +1,16 @@
+syntax = "proto3";
+package RicartArgawala;
+option go_package = "gRPC/";
+
+service RicartArgawala {
+    rpc request (Message) returns (response);
+}
+
+message Message {
+    int64 lamport = 1;
+    string node_id = 2;
+}
+
+message response {
+     string msg = 1;
+}
