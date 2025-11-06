@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"context"
@@ -165,7 +165,7 @@ func (s *Server) EnterCS(ctx context.Context, e *pb.Empty) (*pb.Response, error)
 	s.state = HELD
 	s.mu.Unlock()
 
-	log.Printf("[%s] Enetered HELD (lamport=%s)", s.id, mylamport)
+	log.Printf("[%s] Enetered HELD (lamport = %s)", s.id, mylamport)
 	return &pb.Response{Msg: "Entered CS"}, nil
 }
 
