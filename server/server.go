@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -31,7 +32,7 @@ type queuedReq struct {
 
 // Node struct representing a Ricart–Agrawala node
 type Node struct {
-	pb.UnimplementedRicartArgawalaServer // satisfies interface
+	pb.UnimplementedRicartArgawalaServer
 
 	mu sync.Mutex
 
@@ -163,8 +164,6 @@ func (n *Node) ReleaseCSInternal() {
 	n.queue = nil
 }
 
-// --- gRPC stubs to satisfy interface ---
-
 func (n *Node) EnterCS(ctx context.Context, e *pb.Empty) (*pb.Response, error) {
 	n.EnterCSInternal()
 	return &pb.Response{Msg: "Entered CS"}, nil
@@ -206,42 +205,36 @@ func (n *Node) AutoCS() {
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	numNodes := 3 // default
-	fmt.Printf("Enter number of nodes to simulate: ")
-	fmt.Scanf("%d", &numNodes)
+	nodeID := flag.String("id", "1", "Node ID: 1, 2, or 3")
+	flag.Parse()
 
-	basePort := 50051
-	nodes := []*Node{}
-	ports := []int{}
-
-	for i := 0; i < numNodes; i++ {
-		ports = append(ports, basePort+i)
+	ports := map[string]int{
+		"1": 50051,
+		"2": 50052,
+		"3": 50053,
 	}
 
-	for i := 0; i < numNodes; i++ {
-		peerAddrs := []string{}
-		for j := 0; j < numNodes; j++ {
-			if j != i {
-				peerAddrs = append(peerAddrs, fmt.Sprintf("localhost:%d", ports[j]))
-			}
-		}
-		node := NewNode(fmt.Sprintf("Node%d", i+1), ports[i], peerAddrs)
-		nodes = append(nodes, node)
+	peerMap := map[string][]string{
+		"1": {"localhost:50052", "localhost:50053"},
+		"2": {"localhost:50051", "localhost:50053"},
+		"3": {"localhost:50051", "localhost:50052"},
 	}
+
+	port := ports[*nodeID]
+	peers := peerMap[*nodeID]
+
+	node := NewNode("Node"+*nodeID, port, peers)
 
 	var wg sync.WaitGroup
-	for _, node := range nodes {
-		wg.Add(1)
-		go node.RunServer(&wg)
-	}
+	wg.Add(1)
 
-	// Give servers time to start
-	time.Sleep(2 * time.Second)
+	go node.RunServer(&wg)
 
-	// Start automatic CS requests
-	for _, node := range nodes {
-		go node.AutoCS()
-	}
+	// Wait a moment for server startup
+	time.Sleep(1 * time.Second)
+
+	// Start automatic CS simulation
+	go node.AutoCS()
 
 	wg.Wait()
 }
